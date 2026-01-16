@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Triqui</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        #tablero {
+            display: grid;
+            grid-template-columns: repeat(3, 100px);
+            grid-template-rows: repeat(3, 100px);
+            gap: 5px;
+            margin-bottom: 20px;
+        }
+
+        .celda {
+            width: 100px;
+            height: 100px;
+            background-color: white;
+            border: 2px solid #333;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .celda:hover {
+            background-color: #e0e0e0;
+        }
+
+        #mensaje {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 20px;
+            min-height: 30px;
+        }
+
+        #reiniciar {
+            padding: 10px 20px;
+            font-size: 18px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        #reiniciar:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <h1>Triqui</h1>
+    <div id="mensaje">Turno: X</div>
+    <div id="tablero">
+        <div class="celda" data-index="0"></div>
+        <div class="celda" data-index="1"></div>
+        <div class="celda" data-index="2"></div>
+        <div class="celda" data-index="3"></div>
+        <div class="celda" data-index="4"></div>
+        <div class="celda" data-index="5"></div>
+        <div class="celda" data-index="6"></div>
+        <div class="celda" data-index="7"></div>
+        <div class="celda" data-index="8"></div>
+    </div>
+    <button id="reiniciar">Reiniciar Juego</button>
+
+    <script>
+        let tablero = ['', '', '', '', '', '', '', '', ''];
+        let jugadorActual = 'X';
+        let juegoActivo = true;
+
+        const combinacionesGanadoras = [
+            [0, 1, 2],
+            [3, 4, 5],
+            [6, 7, 8],
+            [0, 3, 6],
+            [1, 4, 7],
+            [2, 5, 8],
+            [0, 4, 8],
+            [2, 4, 6]
+        ];
+
+        const celdas = document.querySelectorAll('.celda');
+        const mensaje = document.getElementById('mensaje');
+        const botonReiniciar = document.getElementById('reiniciar');
+
+        celdas.forEach(celda => {
+            celda.addEventListener('click', manejarClick);
+        });
+
+        botonReiniciar.addEventListener('click', reiniciarJuego);
+
+        function manejarClick(e) {
+            const index = e.target.getAttribute('data-index');
+
+            if (tablero[index] !== '' || !juegoActivo) {
+                return;
+            }
+
+            tablero[index] = jugadorActual;
+            e.target.textContent = jugadorActual;
+
+            if (verificarGanador()) {
+                mensaje.textContent = `¡Jugador ${jugadorActual} gana!`;
+                juegoActivo = false;
+                return;
+            }
+
+            if (tablero.every(celda => celda !== '')) {
+                mensaje.textContent = '¡Empate!';
+                juegoActivo = false;
+                return;
+            }
+
+            jugadorActual = jugadorActual === 'X' ? 'O' : 'X';
+            mensaje.textContent = `Turno: ${jugadorActual}`;
+        }
+
+        function verificarGanador() {
+            return combinacionesGanadoras.some(combinacion => {
+                const [a, b, c] = combinacion;
+                return tablero[a] !== '' && 
+                       tablero[a] === tablero[b] && 
+                       tablero[a] === tablero[c];
+            });
+        }
+
+        function reiniciarJuego() {
+            tablero = ['', '', '', '', '', '', '', '', ''];
+            jugadorActual = 'X';
+            juegoActivo = true;
+            mensaje.textContent = 'Turno: X';
+            celdas.forEach(celda => {
+                celda.textContent = '';
+            });
+        }
+    </script>
+</body>
+</html>
