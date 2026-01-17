@@ -176,9 +176,11 @@ Publicar la app en Google Play Store para que cualquiera pueda descargarla.
 ```
 Desarrollo      ████████████████████  100% ✅
 Monetización    ████████████████████  100% ✅
+Mejoras v2.0    ████████████████████  100% ✅
+Mejoras v2.1    ████████████████████  100% ✅ (NUEVO)
 Publicación     ░░░░░░░░░░░░░░░░░░░░    0% ⏳
                 ────────────────────
-Total           █████████████░░░░░░░   67%
+Total           ████████████████░░░░   80%
 ```
 
 ---
@@ -199,15 +201,23 @@ Total           █████████████░░░░░░░   6
 
 ## 💡 Ideas de Mejoras Futuras
 
-### Funcionalidades:
-- [ ] Modo de 2 jugadores (mismo dispositivo)
-- [ ] Contador de victorias (X vs O)
-- [ ] Diferentes niveles de dificultad vs IA
-- [ ] Sonidos al hacer click
-- [ ] Animaciones al ganar
-- [ ] Vibración al hacer jugada
-- [ ] Temas (modo oscuro/claro)
+### ✅ Funcionalidades Implementadas (v2.1):
+- [x] Modo oscuro con colores neón
+- [x] Pantalla de inicio profesional
+- [x] Navegación entre pantallas
+- [x] Contador de victorias (X vs O) persistente
+- [x] Sistema de sonidos (código listo, archivos opcionales)
+- [x] Botones "Reiniciar" e "Inicio" después del anuncio
+- [x] Estadísticas persistentes
+- [x] **Actualización automática de estadísticas al volver al inicio**
+- [x] **Animación de línea ganadora (brillo dorado en celdas)**
+- [x] **Vibración al ganar con patrones diferentes (Haptic Feedback)**
+
+### Funcionalidades Pendientes:
+- [ ] Archivos de sonido reales (estructura lista en `docs/sonidos-guide.md`)
+- [ ] Temas adicionales (más paletas de colores)
 - [ ] Diferentes tamaños de tablero (4x4, 5x5)
+- [ ] Modo contra IA (inteligencia artificial)
 
 ### Técnicas:
 - [ ] Implementar IA simple para jugar contra la máquina
@@ -283,6 +293,7 @@ Ya diste el primer paso. ¡Sigue adelante! 💪
 
 ---
 
-**Última actualización**: 15 de enero, 2026
-**Progreso general**: 67% completado
+**Última actualización**: 17 de enero, 2026
+**Progreso general**: 80% completado
+**Versión actual**: 2.1
 **Siguiente hito**: Publicar en Play Store
