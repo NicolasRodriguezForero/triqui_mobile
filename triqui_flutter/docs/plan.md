@@ -54,34 +54,42 @@ Aprender el ciclo completo de desarrollo móvil:
 
 ---
 
-## ⏳ Fase 2: Monetización (PENDIENTE)
+## ✅ Fase 2: Monetización (COMPLETADA)
 
 ### Objetivos:
 Integrar Google AdMob para generar ingresos con anuncios.
 
-### Pasos a seguir:
+### Lo que hicimos:
 
 #### 2.1 Configurar AdMob
-- [ ] Crear cuenta de Google AdMob
-- [ ] Registrar la aplicación en AdMob
-- [ ] Obtener App ID de AdMob
-- [ ] Obtener Unit IDs para los anuncios
+- ✅ Crear cuenta de Google AdMob
+- ✅ Registrar la aplicación en AdMob
+- ✅ Obtener App ID de AdMob
+- ✅ Obtener Unit IDs para los anuncios (banner + interstitial)
 
 #### 2.2 Integrar SDK de AdMob
-- [ ] Agregar dependencia `google_mobile_ads` en `pubspec.yaml`
-- [ ] Configurar IDs en Android (AndroidManifest.xml)
-- [ ] Inicializar MobileAds en la app
+- ✅ Agregar dependencia `google_mobile_ads: ^5.1.0` en `pubspec.yaml`
+- ✅ Configurar App ID en `AndroidManifest.xml`
+- ✅ Inicializar MobileAds en la app (`main()`)
+- ✅ Crear `ad_helper.dart` con IDs de prueba
 
 #### 2.3 Implementar Anuncios
-- [ ] **Banner Ads**: En la parte inferior del juego
-- [ ] **Interstitial Ads**: Al terminar cada partida
-- [ ] Probar anuncios de prueba en el emulador
-- [ ] Implementar manejo de errores
+- ✅ **Banner Ads**: En la parte inferior del juego (siempre visible)
+- ✅ **Interstitial Ads**: Al terminar cada partida (ganador o empate)
+- ✅ Implementar manejo de errores y callbacks
+- ✅ Configurar recarga automática de interstitial
 
 #### 2.4 Testing de Anuncios
-- [ ] Probar en emulador con anuncios de prueba
-- [ ] Probar en dispositivo físico
-- [ ] Verificar que no afecten la experiencia del usuario
+- ✅ Probar en dispositivo físico (NAM LX9)
+- ✅ Verificar que funcionan correctamente
+- ✅ Confirmar que no afectan la experiencia del usuario
+
+### Aprendimos:
+- ✅ Cómo funciona Google AdMob
+- ✅ Diferencia entre IDs de prueba y producción
+- ✅ Implementación de Banner e Interstitial Ads
+- ✅ Manejo del ciclo de vida de anuncios
+- ✅ Testing con anuncios de prueba
 
 ### Tipos de Anuncios a Usar:
 
@@ -167,20 +175,25 @@ Publicar la app en Google Play Store para que cualquiera pueda descargarla.
 
 ```
 Desarrollo      ████████████████████  100% ✅
-Monetización    ░░░░░░░░░░░░░░░░░░░░    0% ⏳
+Monetización    ████████████████████  100% ✅
 Publicación     ░░░░░░░░░░░░░░░░░░░░    0% ⏳
                 ────────────────────
-Total           ███████░░░░░░░░░░░░░   33%
+Total           █████████████░░░░░░░   67%
 ```
 
 ---
 
 ## 🎯 Próximos Pasos Inmediatos
 
-1. **Descansar y revisar** lo aprendido hasta ahora
-2. **Leer** la documentación en `docs/explain.md`
-3. **Decidir** si seguir con monetización o publicación
-4. **Opcional**: Mejorar el diseño del juego antes de publicar
+1. **¡Ya casi terminamos!** Solo falta la **Fase 3: Publicación**
+2. **Antes de publicar**:
+   - Reemplazar IDs de prueba con tus IDs reales en `ad_helper.dart`
+   - Opcional: Mejorar diseño/agregar funcionalidades
+3. **Publicar en Play Store**:
+   - Preparar la app (nombre, ícono, descripción)
+   - Generar keystore y compilar AAB
+   - Crear cuenta de Google Play Developer ($25 USD)
+   - Subir y publicar
 
 ---
 
@@ -270,6 +283,6 @@ Ya diste el primer paso. ¡Sigue adelante! 💪
 
 ---
 
-**Última actualización**: 16 de enero, 2026
-**Progreso general**: 33% completado
-**Siguiente hito**: Integrar AdMob
+**Última actualización**: 15 de enero, 2026
+**Progreso general**: 67% completado
+**Siguiente hito**: Publicar en Play Store

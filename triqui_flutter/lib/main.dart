@@ -244,8 +244,8 @@ class _TriquiGameState extends State<TriquiGame> {
                             fontSize: 48,
                             fontWeight: FontWeight.bold,
                             color: tablero[index] == 'X' 
-                                ? Colors.green 
-                                : Colors.red,
+                                ? Colors.red 
+                                : Colors.blue,
                           ),
                         ),
                       ),
