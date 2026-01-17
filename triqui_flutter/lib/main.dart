@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'ad_helper.dart';  // ← IMPORTAR NUESTRO ARCHIVO DE CONSTANTES
 
 // Punto de entrada de la aplicación
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  MobileAds.instance.initialize();
   runApp(TriquiApp());
 }
 
@@ -12,7 +16,7 @@ class TriquiApp extends StatelessWidget {
     return MaterialApp(
       title: 'Triqui',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.red,
       ),
       home: TriquiGame(),
       debugShowCheckedModeBanner: false,
@@ -32,6 +36,14 @@ class _TriquiGameState extends State<TriquiGame> {
   String jugadorActual = 'X';
   bool juegoActivo = true;
   String mensaje = 'Turno: X';
+  
+  // Variable para el Banner Ad
+  BannerAd? _bannerAd;
+  bool _isBannerAdLoaded = false;
+  
+  // Variable para el Interstitial Ad
+  InterstitialAd? _interstitialAd;
+  bool _isInterstitialAdLoaded = false;
 
   // Combinaciones ganadoras (igual que en JavaScript)
   final List<List<int>> combinacionesGanadoras = [
@@ -44,6 +56,83 @@ class _TriquiGameState extends State<TriquiGame> {
     [0, 4, 8], // Diagonal 1
     [2, 4, 6], // Diagonal 2
   ];
+  
+  // Cargar los anuncios cuando se inicia la pantalla
+  @override
+  void initState() {
+    super.initState();
+    _loadBannerAd();
+    _loadInterstitialAd();
+  }
+  
+  // Cargar el anuncio de banner
+  void _loadBannerAd() {
+    _bannerAd = BannerAd(
+      adUnitId: AdHelper.bannerAdUnitId,
+      size: AdSize.banner,
+      request: AdRequest(),
+      listener: BannerAdListener(
+        onAdLoaded: (ad) {
+          setState(() {
+            _isBannerAdLoaded = true;
+          });
+        },
+        onAdFailedToLoad: (ad, error) {
+          print('Error al cargar el banner: $error');
+          ad.dispose();
+        },
+      ),
+    );
+    
+    _bannerAd!.load();
+  }
+  
+  // Cargar el anuncio intersticial
+  void _loadInterstitialAd() {
+    InterstitialAd.load(
+      adUnitId: AdHelper.interstitialAdUnitId,
+      request: AdRequest(),
+      adLoadCallback: InterstitialAdLoadCallback(
+        onAdLoaded: (ad) {
+          _interstitialAd = ad;
+          _isInterstitialAdLoaded = true;
+          
+          // Configurar callback cuando se cierre el anuncio
+          ad.fullScreenContentCallback = FullScreenContentCallback(
+            onAdDismissedFullScreenContent: (ad) {
+              ad.dispose();
+              _loadInterstitialAd(); // Cargar el siguiente anuncio
+            },
+            onAdFailedToShowFullScreenContent: (ad, error) {
+              print('Error al mostrar intersticial: $error');
+              ad.dispose();
+              _loadInterstitialAd();
+            },
+          );
+        },
+        onAdFailedToLoad: (error) {
+          print('Error al cargar intersticial: $error');
+          _isInterstitialAdLoaded = false;
+        },
+      ),
+    );
+  }
+  
+  // Mostrar el anuncio intersticial
+  void _showInterstitialAd() {
+    if (_isInterstitialAdLoaded && _interstitialAd != null) {
+      _interstitialAd!.show();
+      _isInterstitialAdLoaded = false;
+    }
+  }
+  
+  // Liberar recursos cuando se cierre la pantalla
+  @override
+  void dispose() {
+    _bannerAd?.dispose();
+    _interstitialAd?.dispose();
+    super.dispose();
+  }
 
   // Función que maneja el clic en una celda
   void manejarClick(int index) {
@@ -60,6 +149,7 @@ class _TriquiGameState extends State<TriquiGame> {
       if (verificarGanador()) {
         mensaje = '¡Jugador $jugadorActual gana!';
         juegoActivo = false;
+        _showInterstitialAd(); // ← MOSTRAR ANUNCIO AL GANAR
         return;
       }
 
@@ -67,6 +157,7 @@ class _TriquiGameState extends State<TriquiGame> {
       if (tablero.every((celda) => celda != '')) {
         mensaje = '¡Empate!';
         juegoActivo = false;
+        _showInterstitialAd(); // ← MOSTRAR ANUNCIO AL EMPATAR
         return;
       }
 
@@ -109,8 +200,12 @@ class _TriquiGameState extends State<TriquiGame> {
       ),
       // Cuerpo de la aplicación
       body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
         children: [
+          // Contenido principal del juego
+          Expanded(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
           // Mensaje del estado del juego
           Padding(
             padding: EdgeInsets.all(20),
@@ -149,8 +244,8 @@ class _TriquiGameState extends State<TriquiGame> {
                             fontSize: 48,
                             fontWeight: FontWeight.bold,
                             color: tablero[index] == 'X' 
-                                ? Colors.blue 
-                                : Colors.red,
+                                ? Colors.red 
+                                : Colors.blue,
                           ),
                         ),
                       ),
@@ -161,17 +256,28 @@ class _TriquiGameState extends State<TriquiGame> {
             ),
           ),
           
-          // Botón de reiniciar
-          ElevatedButton(
-            onPressed: reiniciarJuego,
-            style: ElevatedButton.styleFrom(
-              padding: EdgeInsets.symmetric(horizontal: 40, vertical: 15),
-            ),
-            child: Text(
-              'Reiniciar Juego',
-              style: TextStyle(fontSize: 18),
+                // Botón de reiniciar
+                ElevatedButton(
+                  onPressed: reiniciarJuego,
+                  style: ElevatedButton.styleFrom(
+                    padding: EdgeInsets.symmetric(horizontal: 40, vertical: 15),
+                  ),
+                  child: Text(
+                    'Reiniciar Juego',
+                    style: TextStyle(fontSize: 18),
+                  ),
+                ),
+              ],
             ),
           ),
+          
+          // Banner Ad en la parte inferior
+          if (_isBannerAdLoaded && _bannerAd != null)
+            Container(
+              height: _bannerAd!.size.height.toDouble(),
+              width: _bannerAd!.size.width.toDouble(),
+              child: AdWidget(ad: _bannerAd!),
+            ),
         ],
       ),
     );

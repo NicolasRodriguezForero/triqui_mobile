@@ -12,6 +12,9 @@ dependencies:
   
   # Material Design (UI components de Google)
   cupertino_icons: ^1.0.2
+  
+  # Google AdMob para anuncios
+  google_mobile_ads: ^5.1.0
 
 # Dependencias de desarrollo
 dev_dependencies:
