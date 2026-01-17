@@ -12,8 +12,6 @@ class SoundHelper {
       await _audioPlayer.play(AssetSource('sounds/victory.mp3'));
     } catch (e) {
       print('Error reproduciendo sonido de victoria: $e');
-      // Si falla, al menos imprimir
-      print('🎵 ¡VICTORIA!');
     }
   }
   
@@ -23,7 +21,6 @@ class SoundHelper {
       await _audioPlayer.play(AssetSource('sounds/draw.mp3'));
     } catch (e) {
       print('Error reproduciendo sonido de empate: $e');
-      print('🎵 Empate');
     }
   }
   
