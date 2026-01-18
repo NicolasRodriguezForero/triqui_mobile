@@ -112,62 +112,110 @@ Integrar Google AdMob para generar ingresos con anuncios.
 
 ---
 
-## ⏳ Fase 3: Publicación (PENDIENTE)
+## ⏳ Fase 3: Publicación (EN PROGRESO)
 
 ### Objetivos:
 Publicar la app en Google Play Store para que cualquiera pueda descargarla.
 
-### Pasos a seguir:
+### Lo que hemos hecho:
 
-#### 3.1 Preparar la Aplicación
-- [ ] Cambiar nombre de la app (de "triqui_flutter" a "Triqui")
-- [ ] Cambiar package name (com.tunombre.triqui)
-- [ ] Crear un ícono profesional para la app
-- [ ] Configurar versión (versionCode y versionName)
-- [ ] Escribir descripción de la app
+#### 3.1 Preparación Inicial (COMPLETADO)
+- ✅ Configurado nombre de la app ("Triqui")
+- ✅ Configurado version (1.0.0+1)
+- ✅ Configurado Application ID (com.example.triqui_flutter)
+- ✅ Configurado versionCode y versionName en build.gradle.kts
+- ✅ Configurado minSdk (21 - Android 5.0)
+- ✅ Actualizado .gitignore para proteger keystore
 
-#### 3.2 Generar Keystore (Firma Digital)
-- [ ] Crear un keystore para firmar la app
-- [ ] Configurar signing en build.gradle
-- [ ] Guardar el keystore en lugar seguro (¡nunca lo pierdas!)
+#### 3.2 Sistema de Firma (COMPLETADO)
+- ✅ Creado KEY_PROPERTIES_TEMPLATE.txt con plantilla
+- ✅ Creado KEYSTORE_INSTRUCTIONS.md con guía completa
+- ✅ Configurado signing automático en build.gradle.kts
+- ✅ Sistema de firma condicional (usa debug si no hay key.properties)
 
-#### 3.3 Compilar APK/AAB de Release
-- [ ] Ejecutar `flutter build apk --release` (APK)
-- [ ] O `flutter build appbundle` (AAB - recomendado)
-- [ ] Probar el APK en dispositivo físico
+#### 3.3 Documentación Creada (COMPLETADO)
+- ✅ **PUBLISHING_GUIDE.md** - Guía completa paso a paso
+- ✅ **KEYSTORE_INSTRUCTIONS.md** - Instrucciones para keystore
+- ✅ **ICON_GUIDE.md** - Guía para crear el ícono
+- ✅ **PLAY_STORE_CONTENT.md** - Plantillas de texto y descripciones
+- ✅ **privacy-policy.html** - Política de privacidad lista
+- ✅ **BUILD_COMMANDS.md** - Todos los comandos necesarios
 
-#### 3.4 Crear Cuenta de Google Play Developer
-- [ ] Pagar $25 USD (pago único de por vida)
+### Pasos pendientes (en orden):
+
+#### 3.4 Preparar AdMob (PENDIENTE)
+- [ ] Obtener IDs reales de AdMob (App ID, Banner ID, Interstitial ID)
+- [ ] Reemplazar en AndroidManifest.xml el App ID
+- [ ] Reemplazar en lib/ad_helper.dart los Unit IDs
+- [ ] Probar que los anuncios funcionen
+
+#### 3.5 Generar Keystore (PENDIENTE)
+- [ ] Ejecutar comando keytool para crear keystore
+- [ ] Crear archivo android/key.properties con contraseñas
+- [ ] Guardar keystore en lugar seguro (USB, nube)
+- [ ] Anotar contraseñas en lugar seguro
+
+#### 3.6 Compilar y Probar (PENDIENTE)
+- [ ] Ejecutar flutter clean
+- [ ] Ejecutar flutter pub get
+- [ ] Compilar APK: flutter build apk --release
+- [ ] Instalar APK en dispositivo físico y probar
+- [ ] Verificar que funcione correctamente
+- [ ] Compilar AAB: flutter build appbundle --release
+
+#### 3.7 Crear Assets (PENDIENTE)
+- [ ] Diseñar ícono de 512x512 px (PNG)
+- [ ] Instalar ícono en la app
+- [ ] Tomar mínimo 2 capturas de pantalla
+- [ ] Escribir descripción corta (80 caracteres)
+- [ ] Escribir descripción larga
+- [ ] Crear gráfico destacado 1024x500 (opcional)
+
+#### 3.8 Política de Privacidad (PENDIENTE)
+- [ ] Editar privacy-policy.html con tu información
+- [ ] Reemplazar [FECHA], [TU_EMAIL], [TU_NOMBRE]
+- [ ] Subir a hosting (GitHub Pages, o cualquier servidor)
+- [ ] Obtener URL pública
+
+#### 3.9 Cuenta de Google Play (PENDIENTE)
+- [ ] Crear cuenta de Google Play Developer ($25 USD)
 - [ ] Completar perfil de desarrollador
 - [ ] Aceptar términos y condiciones
 
-#### 3.5 Subir la Aplicación
-- [ ] Crear nueva aplicación en Google Play Console
-- [ ] Subir el archivo AAB
-- [ ] Completar la ficha de la tienda:
+#### 3.10 Crear Aplicación en Play Console (PENDIENTE)
+- [ ] Crear nueva aplicación
+- [ ] Completar ficha de la tienda:
+  - Nombre: Triqui
+  - Descripción corta
+  - Descripción larga
+  - Ícono 512x512
   - Capturas de pantalla (mínimo 2)
-  - Ícono de alta resolución (512x512)
-  - Banner destacado
-  - Descripción corta y larga
   - Categoría: Juegos > Casual
-- [ ] Configurar clasificación de contenido
-- [ ] Configurar países donde estará disponible
+  - Política de privacidad (URL)
+- [ ] Completar clasificación de contenido
+- [ ] Seleccionar países donde estará disponible
 
-#### 3.6 Revisión y Publicación
+#### 3.11 Subir y Publicar (PENDIENTE)
+- [ ] Ir a Producción > Crear versión
+- [ ] Subir app-release.aab
+- [ ] Agregar notas de la versión
+- [ ] Revisar que todo esté completo
 - [ ] Enviar a revisión
 - [ ] Esperar aprobación (1-7 días)
 - [ ] ¡Publicado!
 
-### Requisitos:
-- Cuenta de Google Play Developer ($25 USD)
-- Capturas de pantalla de la app
-- Ícono de 512x512 px
-- Descripción atractiva
-- Política de privacidad (si usas anuncios)
+### Recursos creados:
+- ✅ Guía completa de publicación (PUBLISHING_GUIDE.md)
+- ✅ Instrucciones de keystore (KEYSTORE_INSTRUCTIONS.md)
+- ✅ Guía para crear ícono (ICON_GUIDE.md)
+- ✅ Plantillas de contenido (PLAY_STORE_CONTENT.md)
+- ✅ Política de privacidad (privacy-policy.html)
+- ✅ Lista de comandos (BUILD_COMMANDS.md)
 
-### Recursos:
-- Documentación: https://docs.flutter.dev/deployment/android
-- Play Console: https://play.google.com/console
+### Herramientas recomendadas:
+- **Diseño de ícono:** Canva, Figma, Icon Kitchen
+- **Hosting de política:** GitHub Pages (gratis)
+- **Capturas:** Emulador Android Studio o dispositivo real
 
 ---
 
@@ -178,25 +226,90 @@ Desarrollo      ████████████████████  10
 Monetización    ████████████████████  100% ✅
 Mejoras v2.0    ████████████████████  100% ✅
 Mejoras v2.1    ████████████████████  100% ✅
-Pulido Final    ████████████████████  100% ✅ (NUEVO)
-Publicación     ░░░░░░░░░░░░░░░░░░░░    0% ⏳
+Pulido Final    ████████████████████  100% ✅
+Publicación     ████████░░░░░░░░░░░░   40% ⏳ (EN PROGRESO)
                 ────────────────────
-Total           ████████████████░░░░   85%
+Total           ████████████████████   90%
+```
+
+**Fase 3 - Desglose:**
+```
+Preparación     ████████████████████  100% ✅
+Documentación   ████████████████████  100% ✅
+AdMob IDs       ░░░░░░░░░░░░░░░░░░░░    0% ⏳
+Keystore        ░░░░░░░░░░░░░░░░░░░░    0% ⏳
+Compilación     ░░░░░░░░░░░░░░░░░░░░    0% ⏳
+Assets          ░░░░░░░░░░░░░░░░░░░░    0% ⏳
+Play Store      ░░░░░░░░░░░░░░░░░░░░    0% ⏳
 ```
 
 ---
 
 ## 🎯 Próximos Pasos Inmediatos
 
-1. **¡Ya casi terminamos!** Solo falta la **Fase 3: Publicación**
-2. **Antes de publicar**:
-   - Reemplazar IDs de prueba con tus IDs reales en `ad_helper.dart`
-   - Opcional: Mejorar diseño/agregar funcionalidades
-3. **Publicar en Play Store**:
-   - Preparar la app (nombre, ícono, descripción)
-   - Generar keystore y compilar AAB
-   - Crear cuenta de Google Play Developer ($25 USD)
-   - Subir y publicar
+### 📝 Lo que acabamos de hacer:
+1. ✅ Configurado nombre e identidad de la app
+2. ✅ Configurado versiones en build.gradle.kts
+3. ✅ Configurado sistema de firma con keystore
+4. ✅ Creado toda la documentación necesaria:
+   - PUBLISHING_GUIDE.md (guía completa)
+   - KEYSTORE_INSTRUCTIONS.md (generación de keystore)
+   - ICON_GUIDE.md (creación de ícono)
+   - PLAY_STORE_CONTENT.md (plantillas de texto)
+   - privacy-policy.html (política de privacidad)
+   - BUILD_COMMANDS.md (comandos útiles)
+5. ✅ Actualizado .gitignore para proteger keystore
+
+### 🚀 Próximos pasos (en orden):
+
+**PASO 1: Reemplazar IDs de AdMob** ⏳
+- Ve a https://apps.admob.google.com
+- Copia tus IDs reales
+- Edita `android/app/src/main/AndroidManifest.xml` (línea 34)
+- Edita `lib/ad_helper.dart`
+
+**PASO 2: Generar Keystore** ⏳
+- Abre PowerShell en la carpeta del proyecto
+- Ejecuta el comando de `BUILD_COMMANDS.md`
+- Crea archivo `android/key.properties`
+- Guarda backup del keystore
+
+**PASO 3: Compilar y Probar** ⏳
+```powershell
+flutter clean
+flutter pub get
+flutter build apk --release
+# Prueba en tu teléfono
+flutter build appbundle --release
+```
+
+**PASO 4: Crear Assets** ⏳
+- Diseña ícono 512x512 (usa Canva o Icon Kitchen)
+- Toma capturas de pantalla (mínimo 2)
+- Escribe descripciones (usa plantillas en PLAY_STORE_CONTENT.md)
+
+**PASO 5: Subir a Play Store** ⏳
+- Crea cuenta de Google Play Developer ($25 USD)
+- Sube el AAB
+- Completa toda la información
+- Envía a revisión
+
+### 📚 Archivos de referencia creados:
+- `PUBLISHING_GUIDE.md` - **Lee este primero** (guía paso a paso completa)
+- `BUILD_COMMANDS.md` - Todos los comandos que necesitas
+- `KEYSTORE_INSTRUCTIONS.md` - Cómo generar el keystore
+- `ICON_GUIDE.md` - Cómo crear el ícono
+- `PLAY_STORE_CONTENT.md` - Plantillas de texto listas
+- `privacy-policy.html` - Política de privacidad (editar con tus datos)
+
+### ⏱️ Tiempo estimado restante:
+- Cambiar IDs de AdMob: 10 minutos
+- Generar keystore: 5 minutos
+- Compilar y probar: 20 minutos
+- Crear ícono: 30-60 minutos
+- Tomar capturas: 10 minutos
+- Subir a Play Store: 30 minutos
+- **Total: ~2-3 horas**
 
 ---
 
@@ -296,8 +409,9 @@ Ya diste el primer paso. ¡Sigue adelante! 💪
 
 ---
 
-**Última actualización**: 17 de enero, 2026
-**Progreso general**: 85% completado
+**Última actualización**: 18 de enero, 2026
+**Progreso general**: 90% completado
 **Versión actual**: 2.1 FINAL
-**Siguiente hito**: Publicar en Play Store
-**Estado**: App completamente funcional con sonidos, vibración y temas elegantes
+**Fase actual**: Publicación (40% - Preparación completada)
+**Siguiente hito**: Generar keystore y compilar AAB
+**Estado**: Documentación de publicación completa, listo para iniciar deployment
