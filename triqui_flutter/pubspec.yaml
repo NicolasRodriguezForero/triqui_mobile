@@ -15,6 +15,15 @@ dependencies:
   
   # Google AdMob para anuncios
   google_mobile_ads: ^5.1.0
+  
+  # Para almacenar contador de victorias
+  shared_preferences: ^2.2.2
+  
+  # Para reproducir sonidos
+  audioplayers: ^5.2.1
+  
+  # Para manejo de estado
+  provider: ^6.1.1
 
 # Dependencias de desarrollo
 dev_dependencies:
@@ -25,3 +34,7 @@ dev_dependencies:
 # Configuración de Flutter
 flutter:
   uses-material-design: true
+  
+  # Assets (sonidos)
+  assets:
+    - assets/sounds/

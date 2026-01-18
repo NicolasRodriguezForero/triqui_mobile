@@ -1,25 +1,263 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart'; // Para HapticFeedback
 import 'package:google_mobile_ads/google_mobile_ads.dart';
-import 'ad_helper.dart';  // ← IMPORTAR NUESTRO ARCHIVO DE CONSTANTES
+import 'package:provider/provider.dart';
+import 'ad_helper.dart';
+import 'theme_provider.dart';
+import 'game_stats.dart';
+import 'sound_helper.dart';
 
 // Punto de entrada de la aplicación
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   MobileAds.instance.initialize();
-  runApp(TriquiApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (_) => ThemeProvider(),
+      child: TriquiApp(),
+    ),
+  );
 }
 
 // Widget principal de la aplicación
 class TriquiApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
+    
     return MaterialApp(
       title: 'Triqui',
-      theme: ThemeData(
-        primarySwatch: Colors.red,
-      ),
-      home: TriquiGame(),
+      theme: themeProvider.lightTheme,
+      darkTheme: themeProvider.darkTheme,
+      themeMode: themeProvider.isDarkMode ? ThemeMode.dark : ThemeMode.light,
+      home: HomeScreen(),
       debugShowCheckedModeBanner: false,
+    );
+  }
+}
+
+// Pantalla de inicio
+class HomeScreen extends StatefulWidget {
+  @override
+  _HomeScreenState createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  // Clave para forzar reconstrucción del widget de estadísticas
+  Key _statsKey = UniqueKey();
+  
+  @override
+  Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
+    final isDark = themeProvider.isDarkMode;
+    
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Triqui'),
+        centerTitle: true,
+        actions: [
+          // Botón de cambio de tema
+          IconButton(
+            icon: Icon(isDark ? Icons.light_mode : Icons.dark_mode),
+            onPressed: () {
+              themeProvider.toggleTheme();
+            },
+            tooltip: isDark ? 'Modo Claro' : 'Modo Oscuro',
+          ),
+        ],
+      ),
+      body: Container(
+        decoration: isDark
+            ? BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [
+                    Color(0xFF0A0E27),
+                    Color(0xFF1a1a3e),
+                  ],
+                ),
+              )
+            : null,
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              // Título del juego con efecto neón si está en modo oscuro
+              Text(
+                'TRIQUI',
+                style: TextStyle(
+                  fontSize: 72,
+                  fontWeight: FontWeight.bold,
+                  color: isDark ? Color(0xFF00FFFF) : Colors.blue,
+                  shadows: isDark
+                      ? [
+                          Shadow(
+                            blurRadius: 20,
+                            color: Color(0xFF00FFFF),
+                          ),
+                          Shadow(
+                            blurRadius: 40,
+                            color: Color(0xFF00FFFF),
+                          ),
+                        ]
+                      : null,
+                ),
+              ),
+              SizedBox(height: 10),
+              
+              // Subtítulo
+              Text(
+                'El clásico juego de estrategia',
+                style: TextStyle(
+                  fontSize: 18,
+                  color: isDark ? Color(0xFFFF006E) : Colors.grey[600],
+                  fontStyle: FontStyle.italic,
+                ),
+              ),
+              
+              SizedBox(height: 60),
+              
+              // Botón principal de jugar
+              ElevatedButton(
+                onPressed: () async {
+                  // Navegar y esperar a que regrese
+                  await Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => TriquiGame()),
+                  );
+                  // Cuando regrese, actualizar las estadísticas
+                  setState(() {
+                    _statsKey = UniqueKey(); // Forzar reconstrucción
+                  });
+                },
+                style: ElevatedButton.styleFrom(
+                  padding: EdgeInsets.symmetric(horizontal: 60, vertical: 20),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                  elevation: isDark ? 0 : 5,
+                  backgroundColor: isDark ? Color(0xFFFF006E) : Colors.blue,
+                  shadowColor: isDark ? Color(0xFFFF006E) : Colors.blue,
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(Icons.people, size: 24),
+                    SizedBox(width: 8),
+                    Text(
+                      'Jugar 2 Personas',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              
+              SizedBox(height: 80),
+              
+              // Estadísticas con key única para forzar reconstrucción
+              StatsWidget(key: _statsKey),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// Widget de estadísticas
+class StatsWidget extends StatelessWidget {
+  const StatsWidget({Key? key}) : super(key: key);
+  
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Provider.of<ThemeProvider>(context).isDarkMode;
+    
+    return FutureBuilder(
+      future: Future.wait([
+        GameStats.getXWins(),
+        GameStats.getOWins(),
+        GameStats.getDraws(),
+      ]),
+      builder: (context, AsyncSnapshot<List<int>> snapshot) {
+        if (!snapshot.hasData) {
+          return CircularProgressIndicator();
+        }
+        
+        final xWins = snapshot.data![0];
+        final oWins = snapshot.data![1];
+        final draws = snapshot.data![2];
+        
+        return Container(
+          padding: EdgeInsets.all(20),
+          margin: EdgeInsets.symmetric(horizontal: 20),
+          decoration: BoxDecoration(
+            color: isDark ? Color(0xFF1a1a3e) : Colors.white,
+            borderRadius: BorderRadius.circular(15),
+            border: isDark
+                ? Border.all(color: Color(0xFF00FFFF), width: 2)
+                : null,
+            boxShadow: [
+              BoxShadow(
+                color: isDark
+                    ? Color(0xFF00FFFF).withOpacity(0.3)
+                    : Colors.black.withOpacity(0.1),
+                blurRadius: 10,
+                spreadRadius: 2,
+              ),
+            ],
+          ),
+          child: Column(
+            children: [
+              Text(
+                'Estadísticas',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: isDark ? Color(0xFF00FFFF) : Colors.black,
+                ),
+              ),
+              SizedBox(height: 15),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  _buildStat('X', xWins, Colors.red, isDark),
+                  _buildStat('O', oWins, Colors.blue, isDark),
+                  _buildStat('=', draws, Colors.grey, isDark),
+                ],
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+  
+  Widget _buildStat(String label, int value, Color color, bool isDark) {
+    return Column(
+      children: [
+        Text(
+          label,
+          style: TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+            color: color,
+          ),
+        ),
+        SizedBox(height: 5),
+        Text(
+          value.toString(),
+          style: TextStyle(
+            fontSize: 28,
+            fontWeight: FontWeight.bold,
+            color: isDark ? Colors.white : Colors.black,
+          ),
+        ),
+      ],
     );
   }
 }
@@ -30,9 +268,9 @@ class TriquiGame extends StatefulWidget {
   _TriquiGameState createState() => _TriquiGameState();
 }
 
-class _TriquiGameState extends State<TriquiGame> {
+class _TriquiGameState extends State<TriquiGame> with SingleTickerProviderStateMixin {
   // Variables del estado del juego
-  List<String> tablero = List.filled(9, ''); // 9 celdas vacías
+  List<String> tablero = List.filled(9, '');
   String jugadorActual = 'X';
   bool juegoActivo = true;
   String mensaje = 'Turno: X';
@@ -44,28 +282,38 @@ class _TriquiGameState extends State<TriquiGame> {
   // Variable para el Interstitial Ad
   InterstitialAd? _interstitialAd;
   bool _isInterstitialAdLoaded = false;
+  
+  // Mostrar botones después del juego
+  bool _mostrarBotonesFinales = false;
+  
+  // Variables para animación de línea ganadora
+  List<int>? _combinacionGanadora;
+  AnimationController? _animationController;
+  Animation<double>? _lineAnimation;
 
-  // Combinaciones ganadoras (igual que en JavaScript)
+  // Combinaciones ganadoras
   final List<List<int>> combinacionesGanadoras = [
-    [0, 1, 2], // Fila 1
-    [3, 4, 5], // Fila 2
-    [6, 7, 8], // Fila 3
-    [0, 3, 6], // Columna 1
-    [1, 4, 7], // Columna 2
-    [2, 5, 8], // Columna 3
-    [0, 4, 8], // Diagonal 1
-    [2, 4, 6], // Diagonal 2
+    [0, 1, 2], [3, 4, 5], [6, 7, 8], // Filas
+    [0, 3, 6], [1, 4, 7], [2, 5, 8], // Columnas
+    [0, 4, 8], [2, 4, 6], // Diagonales
   ];
   
-  // Cargar los anuncios cuando se inicia la pantalla
   @override
   void initState() {
     super.initState();
     _loadBannerAd();
     _loadInterstitialAd();
+    
+    // Inicializar animación
+    _animationController = AnimationController(
+      duration: Duration(milliseconds: 500),
+      vsync: this,
+    );
+    _lineAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _animationController!, curve: Curves.easeInOut),
+    );
   }
   
-  // Cargar el anuncio de banner
   void _loadBannerAd() {
     _bannerAd = BannerAd(
       adUnitId: AdHelper.bannerAdUnitId,
@@ -83,11 +331,9 @@ class _TriquiGameState extends State<TriquiGame> {
         },
       ),
     );
-    
     _bannerAd!.load();
   }
   
-  // Cargar el anuncio intersticial
   void _loadInterstitialAd() {
     InterstitialAd.load(
       adUnitId: AdHelper.interstitialAdUnitId,
@@ -97,16 +343,22 @@ class _TriquiGameState extends State<TriquiGame> {
           _interstitialAd = ad;
           _isInterstitialAdLoaded = true;
           
-          // Configurar callback cuando se cierre el anuncio
           ad.fullScreenContentCallback = FullScreenContentCallback(
             onAdDismissedFullScreenContent: (ad) {
               ad.dispose();
-              _loadInterstitialAd(); // Cargar el siguiente anuncio
+              _loadInterstitialAd();
+              // Mostrar botones después de cerrar el anuncio
+              setState(() {
+                _mostrarBotonesFinales = true;
+              });
             },
             onAdFailedToShowFullScreenContent: (ad, error) {
               print('Error al mostrar intersticial: $error');
               ad.dispose();
               _loadInterstitialAd();
+              setState(() {
+                _mostrarBotonesFinales = true;
+              });
             },
           );
         },
@@ -118,38 +370,67 @@ class _TriquiGameState extends State<TriquiGame> {
     );
   }
   
-  // Mostrar el anuncio intersticial
   void _showInterstitialAd() {
     if (_isInterstitialAdLoaded && _interstitialAd != null) {
       _interstitialAd!.show();
       _isInterstitialAdLoaded = false;
+    } else {
+      // Si no hay anuncio, mostrar botones inmediatamente
+      setState(() {
+        _mostrarBotonesFinales = true;
+      });
     }
   }
   
-  // Liberar recursos cuando se cierre la pantalla
   @override
   void dispose() {
     _bannerAd?.dispose();
     _interstitialAd?.dispose();
+    _animationController?.dispose();
     super.dispose();
   }
 
-  // Función que maneja el clic en una celda
-  void manejarClick(int index) {
-    // Si la celda está ocupada o el juego terminó, no hacer nada
+  void manejarClick(int index) async {
     if (tablero[index] != '' || !juegoActivo) {
       return;
     }
 
-    // Actualizar el estado (setState es como "re-renderizar" en React)
     setState(() {
       tablero[index] = jugadorActual;
+    });
+    
+    // Vibración ligera al hacer click (nativa de Flutter)
+    HapticFeedback.lightImpact();
+    
+    SoundHelper.playClick();
 
-      // Verificar si hay ganador
-      if (verificarGanador()) {
+    setState(() {
+      // Verificar ganador
+      final combinacion = verificarGanador();
+      if (combinacion != null) {
         mensaje = '¡Jugador $jugadorActual gana!';
         juegoActivo = false;
-        _showInterstitialAd(); // ← MOSTRAR ANUNCIO AL GANAR
+        _combinacionGanadora = combinacion;
+        
+        // Vibración de victoria
+        HapticFeedback.heavyImpact();
+        
+        // Iniciar animación de línea ganadora
+        _animationController?.forward();
+        
+        // Guardar estadísticas
+        if (jugadorActual == 'X') {
+          GameStats.incrementXWins();
+        } else {
+          GameStats.incrementOWins();
+        }
+        
+        SoundHelper.playVictory();
+        
+        // Esperar 1 segundo antes de mostrar el anuncio
+        Future.delayed(Duration(seconds: 1), () {
+          _showInterstitialAd();
+        });
         return;
       }
 
@@ -157,7 +438,17 @@ class _TriquiGameState extends State<TriquiGame> {
       if (tablero.every((celda) => celda != '')) {
         mensaje = '¡Empate!';
         juegoActivo = false;
-        _showInterstitialAd(); // ← MOSTRAR ANUNCIO AL EMPATAR
+        
+        // Vibración de empate
+        HapticFeedback.mediumImpact();
+        
+        GameStats.incrementDraws();
+        SoundHelper.playDraw();
+        
+        // Esperar 1 segundo antes de mostrar el anuncio
+        Future.delayed(Duration(seconds: 1), () {
+          _showInterstitialAd();
+        });
         return;
       }
 
@@ -167,118 +458,225 @@ class _TriquiGameState extends State<TriquiGame> {
     });
   }
 
-  // Función para verificar si hay ganador
-  bool verificarGanador() {
+  List<int>? verificarGanador() {
     for (var combinacion in combinacionesGanadoras) {
       if (tablero[combinacion[0]] != '' &&
           tablero[combinacion[0]] == tablero[combinacion[1]] &&
           tablero[combinacion[0]] == tablero[combinacion[2]]) {
-        return true;
+        return combinacion;
       }
     }
-    return false;
+    return null;
   }
 
-  // Función para reiniciar el juego
   void reiniciarJuego() {
     setState(() {
       tablero = List.filled(9, '');
       jugadorActual = 'X';
       juegoActivo = true;
       mensaje = 'Turno: X';
+      _mostrarBotonesFinales = false;
+      _combinacionGanadora = null;
+      _animationController?.reset();
     });
   }
+  
+  void volverAlInicio() {
+    Navigator.pop(context);
+  }
 
-  // Construir la interfaz visual
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
+    final isDark = themeProvider.isDarkMode;
+    
     return Scaffold(
-      // Barra superior
       appBar: AppBar(
-        title: Text('Triqui'),
+        title: Text('Triqui - 2 Jugadores'),
         centerTitle: true,
       ),
-      // Cuerpo de la aplicación
-      body: Column(
-        children: [
-          // Contenido principal del juego
-          Expanded(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-          // Mensaje del estado del juego
-          Padding(
-            padding: EdgeInsets.all(20),
-            child: Text(
-              mensaje,
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-            ),
-          ),
-          
-          // Tablero del juego (Grid de 3x3)
-          Padding(
-            padding: EdgeInsets.all(20),
-            child: AspectRatio(
-              aspectRatio: 1,
-              child: GridView.builder(
-                shrinkWrap: true,
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 3, // 3 columnas
-                  crossAxisSpacing: 5,
-                  mainAxisSpacing: 5,
+      body: Container(
+        decoration: isDark
+            ? BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [
+                    Color(0xFF0A0E27),
+                    Color(0xFF1a1a3e),
+                  ],
                 ),
-                itemCount: 9,
-                itemBuilder: (context, index) {
-                  return GestureDetector(
-                    onTap: () => manejarClick(index),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        border: Border.all(color: Colors.black, width: 2),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Center(
-                        child: Text(
-                          tablero[index],
-                          style: TextStyle(
-                            fontSize: 48,
-                            fontWeight: FontWeight.bold,
-                            color: tablero[index] == 'X' 
-                                ? Colors.red 
-                                : Colors.blue,
-                          ),
-                        ),
+              )
+            : null,
+        child: Column(
+          children: [
+            Expanded(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  // Mensaje del estado
+                  Padding(
+                    padding: EdgeInsets.all(20),
+                    child: Text(
+                      mensaje,
+                      style: TextStyle(
+                        fontSize: 28,
+                        fontWeight: FontWeight.bold,
+                        color: isDark ? Color(0xFF00FFFF) : Colors.black,
+                        shadows: isDark
+                            ? [
+                                Shadow(
+                                  blurRadius: 10,
+                                  color: Color(0xFF00FFFF),
+                                ),
+                              ]
+                            : null,
                       ),
                     ),
-                  );
-                },
+                  ),
+                  
+                  // Tablero
+                  Padding(
+                    padding: EdgeInsets.all(20),
+                    child: AspectRatio(
+                      aspectRatio: 1,
+                      child: GridView.builder(
+                        shrinkWrap: true,
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 3,
+                          crossAxisSpacing: 8,
+                          mainAxisSpacing: 8,
+                        ),
+                        itemCount: 9,
+                        itemBuilder: (context, index) {
+                          // Verificar si esta celda es parte de la combinación ganadora
+                          final esGanadora = _combinacionGanadora?.contains(index) ?? false;
+                          
+                          return AnimatedBuilder(
+                            animation: _lineAnimation ?? AlwaysStoppedAnimation(0),
+                            builder: (context, child) {
+                              return GestureDetector(
+                                onTap: () => manejarClick(index),
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    color: esGanadora
+                                        ? (isDark
+                                            ? Color(0xFFFFD700).withOpacity(0.3 + (_lineAnimation?.value ?? 0) * 0.3)
+                                            : Colors.yellow.withOpacity(0.3 + (_lineAnimation?.value ?? 0) * 0.3))
+                                        : (isDark
+                                            ? Color(0xFF1a1a3e)
+                                            : Colors.white),
+                                    border: Border.all(
+                                      color: esGanadora
+                                          ? (isDark ? Color(0xFFFFD700) : Colors.orange)
+                                          : (isDark ? Color(0xFF00FFFF) : Colors.black),
+                                      width: esGanadora ? 3 : 2,
+                                    ),
+                                    borderRadius: BorderRadius.circular(12),
+                                    boxShadow: esGanadora
+                                        ? [
+                                            BoxShadow(
+                                              color: (isDark ? Color(0xFFFFD700) : Colors.orange)
+                                                  .withOpacity(0.5 * (_lineAnimation?.value ?? 0)),
+                                              blurRadius: 20,
+                                              spreadRadius: 5,
+                                            ),
+                                          ]
+                                        : (isDark
+                                            ? [
+                                                BoxShadow(
+                                                  color: Color(0xFF00FFFF).withOpacity(0.3),
+                                                  blurRadius: 8,
+                                                ),
+                                              ]
+                                            : null),
+                                  ),
+                                  child: Center(
+                                    child: Text(
+                                      tablero[index],
+                                      style: TextStyle(
+                                        fontSize: 48,
+                                        fontWeight: FontWeight.bold,
+                                        color: tablero[index] == 'X'
+                                            ? (isDark ? Color(0xFFFF006E) : Colors.red)
+                                            : (isDark ? Color(0xFF00FFFF) : Colors.blue),
+                                        shadows: isDark && tablero[index] != ''
+                                            ? [
+                                                Shadow(
+                                                  blurRadius: 15,
+                                                  color: tablero[index] == 'X'
+                                                      ? Color(0xFFFF006E)
+                                                      : Color(0xFF00FFFF),
+                                                ),
+                                              ]
+                                            : null,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              );
+                            },
+                          );
+                        },
+                      ),
+                    ),
+                  ),
+                  
+                  // Botones después del juego
+                  if (_mostrarBotonesFinales)
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 20),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          ElevatedButton.icon(
+                            onPressed: reiniciarJuego,
+                            icon: Icon(Icons.refresh),
+                            label: Text('Reiniciar'),
+                            style: ElevatedButton.styleFrom(
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 30, vertical: 15),
+                            ),
+                          ),
+                          ElevatedButton.icon(
+                            onPressed: volverAlInicio,
+                            icon: Icon(Icons.home),
+                            label: Text('Inicio'),
+                            style: ElevatedButton.styleFrom(
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 30, vertical: 15),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  
+                  // Botón de reiniciar normal (cuando el juego está activo)
+                  if (!_mostrarBotonesFinales)
+                    ElevatedButton(
+                      onPressed: reiniciarJuego,
+                      style: ElevatedButton.styleFrom(
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 40, vertical: 15),
+                      ),
+                      child: Text(
+                        'Reiniciar Juego',
+                        style: TextStyle(fontSize: 18),
+                      ),
+                    ),
+                ],
               ),
             ),
-          ),
-          
-                // Botón de reiniciar
-                ElevatedButton(
-                  onPressed: reiniciarJuego,
-                  style: ElevatedButton.styleFrom(
-                    padding: EdgeInsets.symmetric(horizontal: 40, vertical: 15),
-                  ),
-                  child: Text(
-                    'Reiniciar Juego',
-                    style: TextStyle(fontSize: 18),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          
-          // Banner Ad en la parte inferior
-          if (_isBannerAdLoaded && _bannerAd != null)
-            Container(
-              height: _bannerAd!.size.height.toDouble(),
-              width: _bannerAd!.size.width.toDouble(),
-              child: AdWidget(ad: _bannerAd!),
-            ),
-        ],
+            
+            // Banner Ad
+            if (_isBannerAdLoaded && _bannerAd != null)
+              Container(
+                height: _bannerAd!.size.height.toDouble(),
+                width: _bannerAd!.size.width.toDouble(),
+                child: AdWidget(ad: _bannerAd!),
+              ),
+          ],
+        ),
       ),
     );
   }
