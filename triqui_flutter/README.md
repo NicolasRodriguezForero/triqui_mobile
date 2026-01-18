@@ -1,311 +1,225 @@
-# Triqui en Flutter - Guía de Aprendizaje
+# 🎮 Triqui - Juego Clásico para Android
 
-## 🎯 Conceptos Clave de Dart vs JavaScript
+![Version](https://img.shields.io/badge/version-1.0.0-blue)
+![Flutter](https://img.shields.io/badge/Flutter-3.38.5-02569B?logo=flutter)
+![Platform](https://img.shields.io/badge/platform-Android-green)
+![License](https://img.shields.io/badge/license-MIT-orange)
 
-### Variables y Tipos
+Juego clásico de Triqui (Tic-Tac-Toe) para Android desarrollado con Flutter.
 
-**JavaScript:**
-```javascript
-let nombre = "Juan";  // tipo inferido
-let edad = 25;
-```
+## ✨ Características
 
-**Dart:**
-```dart
-String nombre = "Juan";  // tipo explícito
-int edad = 25;
-// O usar 'var' para inferencia:
-var nombre = "Juan";     // Dart infiere que es String
-```
+- 🎯 **Modo 2 Jugadores** - Juega con amigos en el mismo dispositivo
+- 📊 **Estadísticas Persistentes** - Lleva el registro de victorias y empates
+- 🎨 **Dos Temas Elegantes** - Modo claro profesional y modo oscuro con efectos neón
+- ✨ **Animaciones** - Línea ganadora con efectos visuales
+- 📳 **Vibración Táctil** - Feedback háptico nativo en cada jugada
+- 🎵 **Efectos de Sonido** - Sonidos inmersivos durante el juego
+- 💰 **Monetización** - Integración con Google AdMob (Banner + Interstitial)
+- 🚀 **Interfaz Moderna** - Diseño fluido con Material Design 3
 
-### Listas (Arrays)
+## 📱 Capturas de Pantalla
 
-**JavaScript:**
-```javascript
-let tablero = ['', '', '', '', '', '', '', '', ''];
-```
+*(Agregar capturas de pantalla aquí)*
 
-**Dart:**
-```dart
-List<String> tablero = List.filled(9, '');
-// O simplemente:
-List<String> tablero = ['', '', '', '', '', '', '', '', ''];
-```
+## 🚀 Estado del Proyecto
 
-### Funciones
+**Versión actual:** 1.0.0  
+**Estado:** 90% completado  
+**Próximo hito:** Publicación en Play Store
 
-**JavaScript:**
-```javascript
-function verificarGanador() {
-  return true;
-}
-// o arrow function:
-const verificarGanador = () => true;
-```
+### Progreso:
+- ✅ Desarrollo completo (100%)
+- ✅ Monetización implementada (100%)
+- ✅ Mejoras y pulido (100%)
+- ⏳ Publicación (40%)
 
-**Dart:**
-```dart
-bool verificarGanador() {
-  return true;
-}
-// Tipos obligatorios en parámetros:
-void manejarClick(int index) {
-  // código
-}
-```
+## 🛠️ Tecnologías Utilizadas
 
-### Condicionales (igual que JavaScript)
+- **Framework:** Flutter 3.38.5
+- **Lenguaje:** Dart 3.10.4
+- **Plataforma:** Android (minSdk 21 - Lollipop)
+- **Dependencias principales:**
+  - `google_mobile_ads` - Anuncios
+  - `shared_preferences` - Almacenamiento local
+  - `audioplayers` - Efectos de sonido
+  - `provider` - Gestión de estado
 
-```dart
-if (tablero[index] != '') {
-  return;
-}
+## 📦 Instalación para Desarrollo
 
-String jugador = actual == 'X' ? 'O' : 'X';
-```
+### Prerrequisitos
 
----
+- Flutter SDK 3.38.5 o superior
+- Android SDK (API 21+)
+- Android Studio o VS Code
+- Git
 
-## 🏗️ Conceptos de Flutter
-
-### 1. Todo es un Widget
-
-En Flutter, **TODO** es un Widget (componente visual):
-- Un botón es un Widget
-- Un texto es un Widget
-- El layout completo es un Widget
-- ¡Hasta la app entera es un Widget!
-
-**Tipos de Widgets:**
-
-#### StatelessWidget (Sin Estado)
-- No cambia con el tiempo
-- Como un componente funcional puro en React
-- Ejemplo: `TriquiApp`
-
-```dart
-class TriquiApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(...);
-  }
-}
-```
-
-#### StatefulWidget (Con Estado)
-- Puede cambiar con el tiempo
-- Como un componente con `useState` en React
-- Ejemplo: `TriquiGame`
-
-```dart
-class TriquiGame extends StatefulWidget {
-  @override
-  _TriquiGameState createState() => _TriquiGameState();
-}
-
-class _TriquiGameState extends State<TriquiGame> {
-  // Variables de estado aquí
-  List<String> tablero = List.filled(9, '');
-  
-  // Para actualizar la UI:
-  setState(() {
-    tablero[0] = 'X';
-  });
-}
-```
-
-### 2. setState() - Como re-renderizar
-
-**JavaScript (manipulación DOM):**
-```javascript
-tablero[index] = jugadorActual;
-document.querySelector(`[data-index="${index}"]`).textContent = jugadorActual;
-```
-
-**Flutter (setState):**
-```dart
-setState(() {
-  tablero[index] = jugadorActual;
-  // Flutter automáticamente redibuja la UI
-});
-```
-
-### 3. Estructura del Código
-
-```dart
-// 1. PUNTO DE ENTRADA
-void main() {
-  runApp(TriquiApp());  // Inicia la app
-}
-
-// 2. APP PRINCIPAL (configuración)
-class TriquiApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Triqui',
-      theme: ThemeData(...),
-      home: TriquiGame(),  // Pantalla inicial
-    );
-  }
-}
-
-// 3. PANTALLA DEL JUEGO (lógica)
-class TriquiGame extends StatefulWidget {
-  @override
-  _TriquiGameState createState() => _TriquiGameState();
-}
-
-// 4. ESTADO DE LA PANTALLA
-class _TriquiGameState extends State<TriquiGame> {
-  // Variables
-  List<String> tablero = List.filled(9, '');
-  
-  // Funciones
-  void manejarClick(int index) { ... }
-  bool verificarGanador() { ... }
-  
-  // UI
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(...);
-  }
-}
-```
-
----
-
-## 📦 Widgets Principales Usados
-
-### Scaffold
-Estructura básica de una pantalla con AppBar y Body:
-```dart
-Scaffold(
-  appBar: AppBar(title: Text('Título')),
-  body: Column(children: [...]),
-)
-```
-
-### Column & Row
-Layouts verticales y horizontales:
-```dart
-Column(
-  children: [
-    Text('Línea 1'),
-    Text('Línea 2'),
-  ],
-)
-```
-
-### GridView.builder
-Grid (cuadrícula) generado dinámicamente:
-```dart
-GridView.builder(
-  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-    crossAxisCount: 3,  // 3 columnas
-  ),
-  itemCount: 9,
-  itemBuilder: (context, index) {
-    return Container(...);  // Cada celda
-  },
-)
-```
-
-### GestureDetector
-Detecta gestos (clicks, swipes, etc):
-```dart
-GestureDetector(
-  onTap: () => manejarClick(index),
-  child: Container(...),
-)
-```
-
-### Container
-Como un `<div>` en HTML:
-```dart
-Container(
-  decoration: BoxDecoration(
-    color: Colors.white,
-    border: Border.all(color: Colors.black),
-  ),
-  child: Text('Contenido'),
-)
-```
-
----
-
-## 🚀 Cómo Ejecutar
-
-### 1. Después de instalar Flutter:
+### Pasos
 
 ```bash
-# Verifica que Flutter esté instalado
-flutter doctor
+# Clonar el repositorio
+git clone https://github.com/TU_USUARIO/triqui_flutter.git
 
-# Ve a la carpeta del proyecto
+# Navegar al proyecto
 cd triqui_flutter
 
-# Obtén las dependencias
+# Instalar dependencias
 flutter pub get
 
-# Ejecuta en un emulador/dispositivo
+# Ejecutar en modo debug
 flutter run
+
+# O ejecutar en modo release
+flutter run --release
 ```
 
-### 2. Opciones de ejecución:
+## 🏗️ Compilar para Producción
+
+### APK de Release
 
 ```bash
-# En Chrome (para probar rápido)
-flutter run -d chrome
+# Limpiar proyecto
+flutter clean
 
-# En Android
-flutter run -d android
+# Obtener dependencias
+flutter pub get
 
-# En iOS (solo Mac)
-flutter run -d ios
+# Compilar APK
+flutter build apk --release
 ```
 
+El APK estará en: `build/app/outputs/flutter-apk/app-release.apk`
+
+### Android App Bundle (AAB)
+
+```bash
+# Compilar AAB para Play Store
+flutter build appbundle --release
+```
+
+El AAB estará en: `build/app/outputs/bundle/release/app-release.aab`
+
+## 🔐 Firma de la Aplicación
+
+Para compilar en modo release, necesitas un keystore. Ver instrucciones completas en:
+
+- **[KEYSTORE_INSTRUCTIONS.md](KEYSTORE_INSTRUCTIONS.md)** - Cómo generar el keystore
+- **[BUILD_COMMANDS.md](BUILD_COMMANDS.md)** - Lista completa de comandos
+
+## 📚 Documentación
+
+- **[PUBLISHING_GUIDE.md](PUBLISHING_GUIDE.md)** - Guía completa de publicación
+- **[ICON_GUIDE.md](ICON_GUIDE.md)** - Cómo crear el ícono de la app
+- **[PLAY_STORE_CONTENT.md](PLAY_STORE_CONTENT.md)** - Plantillas de texto
+- **[docs/plan.md](docs/plan.md)** - Plan del proyecto
+- **[docs/explain.md](docs/explain.md)** - Explicación detallada de Flutter
+
+## 🎮 Cómo Jugar
+
+1. Los jugadores se turnan colocando **X** y **O** en el tablero 3x3
+2. El objetivo es alinear 3 símbolos iguales en:
+   - Una fila horizontal
+   - Una columna vertical
+   - Una diagonal
+3. El primer jugador en lograrlo gana la partida
+4. Si el tablero se llena sin ganador, es empate
+
+## 📊 Estructura del Proyecto
+
+```
+triqui_flutter/
+├── android/                 # Código nativo Android
+│   └── app/
+│       ├── src/main/
+│       │   └── AndroidManifest.xml
+│       └── build.gradle.kts
+├── assets/
+│   └── sounds/             # Efectos de sonido
+├── docs/                   # Documentación
+│   ├── plan.md
+│   ├── explain.md
+│   └── COMPARACION_JS_DART.md
+├── lib/                    # Código Dart
+│   ├── main.dart          # Punto de entrada
+│   ├── ad_helper.dart     # Configuración de AdMob
+│   ├── theme_provider.dart # Gestión de temas
+│   ├── game_stats.dart    # Estadísticas
+│   └── sound_helper.dart  # Efectos de sonido
+├── test/                  # Pruebas
+├── pubspec.yaml          # Dependencias
+└── README.md
+```
+
+## 🎨 Temas
+
+### Modo Claro
+- Paleta azul profundo profesional
+- Material Design 3
+- Acentos dorados
+
+### Modo Oscuro
+- Gradiente neón (cian + magenta)
+- Efectos de resplandor
+- Estilo cyberpunk
+
+## 💰 Monetización
+
+La aplicación incluye dos tipos de anuncios:
+
+1. **Banner Ads** - En la parte inferior durante el juego
+2. **Interstitial Ads** - Al finalizar cada partida
+
+Para configurar tus propios IDs de AdMob:
+1. Edita `android/app/src/main/AndroidManifest.xml`
+2. Edita `lib/ad_helper.dart`
+
+Ver [PUBLISHING_GUIDE.md](PUBLISHING_GUIDE.md) para más detalles.
+
+## 🔒 Privacidad
+
+La aplicación:
+- ✅ No recopila información personal
+- ✅ Guarda estadísticas solo localmente
+- ✅ Usa Google AdMob para anuncios
+- ✅ Cumple con políticas de privacidad
+
+Ver [privacy-policy.html](privacy-policy.html) para la política completa.
+
+## 🚀 Próximos Pasos
+
+- [ ] Reemplazar IDs de prueba de AdMob
+- [ ] Generar keystore de producción
+- [ ] Crear ícono definitivo
+- [ ] Tomar capturas de pantalla
+- [ ] Publicar en Google Play Store
+
+## 🤝 Contribuciones
+
+Este es un proyecto de aprendizaje personal. Las sugerencias son bienvenidas.
+
+## 📝 Licencia
+
+Este proyecto está bajo la licencia MIT. Ver archivo `LICENSE` para más detalles.
+
+## 👤 Autor
+
+**[Tu Nombre]**
+
+- GitHub: [@TU_USUARIO](https://github.com/TU_USUARIO)
+- Email: tu_email@ejemplo.com
+
+## 🙏 Agradecimientos
+
+- Flutter Team por el excelente framework
+- Google AdMob por la plataforma de monetización
+- Comunidad de Flutter por los recursos
+
+## 📱 Descargar
+
+*(Una vez publicado, agregar link de Play Store)*
+
+[![Get it on Google Play](https://play.google.com/intl/en_us/badges/static/images/badges/es_badge_web_generic.png)](https://play.google.com/store/apps/details?id=com.example.triqui_flutter)
+
 ---
 
-## 📱 Diferencias con el HTML
-
-| Concepto | HTML/JS | Flutter |
-|----------|---------|---------|
-| Estructura | `<div>`, `<button>` | `Container()`, `ElevatedButton()` |
-| Estilos | CSS separado | Dentro del Widget |
-| Layout | Flexbox/Grid CSS | `Column`, `Row`, `GridView` |
-| Estado | Variables + DOM | `setState()` |
-| Eventos | `addEventListener` | `onTap`, `onPressed`, etc |
-| Renderizar | Manipular DOM | `build()` method |
-
----
-
-## 🎓 Próximos Pasos
-
-1. ✅ Ejecuta la app en un emulador
-2. 📱 Prueba en tu dispositivo Android
-3. 🎨 Personaliza colores y estilos
-4. 💰 Integraremos AdMob (anuncios)
-5. 🚀 Publicaremos en Play Store
-
----
-
-## 🔥 Hot Reload
-
-Una de las mejores características de Flutter:
-
-1. Ejecuta `flutter run`
-2. Modifica el código (ej: cambia un color)
-3. Presiona `r` en la terminal
-4. ¡Los cambios aparecen INSTANTÁNEAMENTE sin reiniciar la app!
-
-Esto hace el desarrollo súper rápido.
-
----
-
-## 💡 Tips
-
-- **No te asustes con los tipos**: Dart es muy claro una vez que te acostumbras
-- **Piensa en Widgets**: Todo se construye componiendo widgets
-- **setState es tu amigo**: Cada vez que cambies algo visual, usa `setState()`
-- **Documentación oficial**: https://flutter.dev es excelente
+**Hecho con ❤️ y Flutter**
