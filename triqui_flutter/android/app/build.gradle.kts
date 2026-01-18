@@ -23,14 +23,14 @@ android {
     }
 
     kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_17.toString()
+        jvmTarget = "17"
     }
 
     defaultConfig {
         // Application ID único para Play Store
         applicationId = "com.example.triqui_flutter"
         // Versión mínima: Android 5.0 (Lollipop)
-        minSdk = 21
+        minSdk = flutter.minSdkVersion
         targetSdk = 36
         versionCode = 1
         versionName = "1.0.0"
@@ -39,10 +39,10 @@ android {
     signingConfigs {
         create("release") {
             if (keystorePropertiesFile.exists()) {
-                keyAlias = keystoreProperties["keyAlias"] as String
-                keyPassword = keystoreProperties["keyPassword"] as String
-                storeFile = file(keystoreProperties["storeFile"] as String)
-                storePassword = keystoreProperties["storePassword"] as String
+                keyAlias = keystoreProperties["keyAlias"]?.toString()
+                keyPassword = keystoreProperties["keyPassword"]?.toString()
+                storeFile = keystoreProperties["storeFile"]?.toString()?.let { file(it) }
+                storePassword = keystoreProperties["storePassword"]?.toString()
             }
         }
     }
