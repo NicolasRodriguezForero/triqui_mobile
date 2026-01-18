@@ -426,7 +426,11 @@ class _TriquiGameState extends State<TriquiGame> with SingleTickerProviderStateM
         }
         
         SoundHelper.playVictory();
-        _showInterstitialAd();
+        
+        // Esperar 1 segundo antes de mostrar el anuncio
+        Future.delayed(Duration(seconds: 1), () {
+          _showInterstitialAd();
+        });
         return;
       }
 
@@ -440,7 +444,11 @@ class _TriquiGameState extends State<TriquiGame> with SingleTickerProviderStateM
         
         GameStats.incrementDraws();
         SoundHelper.playDraw();
-        _showInterstitialAd();
+        
+        // Esperar 1 segundo antes de mostrar el anuncio
+        Future.delayed(Duration(seconds: 1), () {
+          _showInterstitialAd();
+        });
         return;
       }
 

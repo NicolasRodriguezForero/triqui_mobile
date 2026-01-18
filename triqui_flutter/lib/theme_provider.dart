@@ -26,20 +26,86 @@ class ThemeProvider extends ChangeNotifier {
     notifyListeners();
   }
   
-  // Tema claro
+  // Tema claro elegante y moderno
   ThemeData get lightTheme {
     return ThemeData(
       brightness: Brightness.light,
-      primaryColor: Colors.blue,
-      scaffoldBackgroundColor: Colors.grey[100],
+      useMaterial3: true,
+      
+      // Paleta de colores elegante: Azul profundo + Dorado suave
+      primaryColor: Color(0xFF1E3A8A), // Azul profundo elegante
+      scaffoldBackgroundColor: Color(0xFFF8FAFC), // Blanco con toque azul muy suave
+      
+      // AppBar con degradado sutil
       appBarTheme: AppBarTheme(
-        backgroundColor: Colors.blue,
+        backgroundColor: Color(0xFF1E3A8A), // Azul profundo
         foregroundColor: Colors.white,
+        elevation: 0,
+        centerTitle: true,
+        titleTextStyle: TextStyle(
+          color: Colors.white,
+          fontSize: 20,
+          fontWeight: FontWeight.w600,
+          letterSpacing: 0.5,
+        ),
       ),
+      
+      // Botones elegantes con sombra
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.blue,
+          backgroundColor: Color(0xFF1E3A8A), // Azul profundo
           foregroundColor: Colors.white,
+          elevation: 3,
+          shadowColor: Color(0xFF1E3A8A).withOpacity(0.3),
+          padding: EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+        ),
+      ),
+      
+      // Esquema de colores general
+      colorScheme: ColorScheme.light(
+        primary: Color(0xFF1E3A8A), // Azul profundo
+        secondary: Color(0xFFD97706), // Dorado/Ámbar elegante
+        surface: Colors.white,
+        background: Color(0xFFF8FAFC),
+        error: Color(0xFFDC2626),
+        onPrimary: Colors.white,
+        onSecondary: Colors.white,
+        onSurface: Color(0xFF1E293B), // Gris oscuro para texto
+        onBackground: Color(0xFF1E293B),
+      ),
+      
+      // Cards y contenedores
+      cardTheme: CardThemeData(
+        elevation: 2,
+        shadowColor: Colors.black.withOpacity(0.1),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+      ),
+      
+      // Tipografía elegante
+      textTheme: TextTheme(
+        displayLarge: TextStyle(
+          fontSize: 72,
+          fontWeight: FontWeight.bold,
+          color: Color(0xFF1E3A8A),
+          letterSpacing: -1.5,
+        ),
+        displayMedium: TextStyle(
+          fontSize: 48,
+          fontWeight: FontWeight.w600,
+          color: Color(0xFF1E293B),
+        ),
+        bodyLarge: TextStyle(
+          color: Color(0xFF1E293B),
+          fontSize: 16,
+        ),
+        bodyMedium: TextStyle(
+          color: Color(0xFF64748B),
+          fontSize: 14,
         ),
       ),
     );
