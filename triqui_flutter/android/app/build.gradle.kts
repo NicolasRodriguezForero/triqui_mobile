@@ -31,7 +31,7 @@ android {
 
     defaultConfig {
         // Application ID único para Play Store
-        applicationId = "com.example.triqui_flutter"
+        applicationId = "com.gizmodev.triqui"
         // Versión mínima: Android 5.0 (Lollipop)
         minSdk = flutter.minSdkVersion
         targetSdk = 36
