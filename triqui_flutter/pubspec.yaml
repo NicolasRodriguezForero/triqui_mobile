@@ -1,6 +1,6 @@
 name: triqui_flutter
 description: Juego clásico de Triqui (Tic-Tac-Toe) para 2 jugadores con estadísticas y temas elegantes
-version: 1.0.0+2
+version: 1.0.0+3
 
 # Versión del SDK de Dart necesaria
 environment:
