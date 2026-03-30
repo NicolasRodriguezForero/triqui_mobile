@@ -26,16 +26,22 @@ dependencies:
   # Para manejo de estado
   provider: ^6.1.1
 
-# Dependencias de desarrollo
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^2.0.0
+  flutter_launcher_icons: ^0.13.1
 
-# Configuración de Flutter
+flutter_launcher_icons:
+  android: true
+  ios: false
+  image_path: "assets/icon/triqui_icon.png"
+  adaptive_icon_background: "#FFFFFF"
+  adaptive_icon_foreground: "assets/icon/triqui_icon.png"
+
 flutter:
   uses-material-design: true
-  
-  # Assets (sonidos)
+
   assets:
     - assets/sounds/
+    - assets/icon/
